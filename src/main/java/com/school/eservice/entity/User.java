@@ -11,7 +11,7 @@ public class User extends AbstractEntity{
     private String lastName;
     private String email;
     private String phone;
-    private boolean enabled;
+
     @ManyToMany
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
