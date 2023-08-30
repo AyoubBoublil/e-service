@@ -28,6 +28,8 @@ public class AbstractEntity {
     @LastModifiedDate
     @Column(columnDefinition = "timestamp default '2020-04-10 20:47:05.967394'")
     protected LocalDateTime lastModifiedDate;
-    private boolean enabled;
+
+    @Column(columnDefinition = "integer default 1")
+    protected int enabled;
 
 }
