@@ -4,6 +4,10 @@ import com.school.eservice.dto.UserDto;
 import com.school.eservice.entity.Role;
 import com.school.eservice.entity.User;
 import com.school.eservice.enums.UserRole;
+import com.school.eservice.exception.ActionNotAllowedException;
+import com.school.eservice.exception.IncorrectDataRequestException;
+import com.school.eservice.exception.UserAlreadyExistsException;
+import com.school.eservice.exception.UserNotFoundException;
 import com.school.eservice.mapper.UserMapper;
 import com.school.eservice.repository.RoleRepository;
 import com.school.eservice.repository.UserRepository;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -32,13 +37,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDto createUser(UserDto userDto) {
-        User user = new User();
-        if (userDto != null) {
+        if (Objects.nonNull(userDto)) {
+            if (userRepository.findByEmail(userDto.getEmail()).isPresent())
+                throw new UserAlreadyExistsException("Email is already used");
             // save role
             Role role = new Role();
             role.setRoleName(UserRole.ADMIN.name());
             role = roleRepository.save(role);
             // save user
+            User user = new User();
             user.setFirstName(userDto.getFirstName());
             user.setLastName(userDto.getLastName());
             user.setEmail(userDto.getEmail());
@@ -48,21 +55,35 @@ public class UserServiceImpl implements UserService {
             log.info("temp password " + tempPwd);
             user.setPassword(tempPwd);
             user = userRepository.save(user);
+            return userMapper.mapToUserDto(user);
         }
-        return userMapper.mapToUserDto(user);
+        throw new IncorrectDataRequestException("The data is incorrect");
     }
 
     @Override
     public UserDto updateUser(UserDto userDto) {
         // get current user to modify from BDD
-        User user = userRepository.findById(userDto.getId()).get();
-        userMapper.updateUserEntityFromDto(userDto,user);
+        User user = userRepository.findById(userDto.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
+        userMapper.updateUserEntityFromDto(userDto, user);
         user = userRepository.save(user);
         return userMapper.mapToUserDto(user);
     }
 
     @Override
-    public void deleteUser(Long idUser) {
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+        // user.setEnabled(0);
+        userRepository.delete(user);
+    }
 
+    @Override
+    public List<UserDto> getAllUsers() {
+        return userMapper.mapToUserDtos(userRepository.findAll());
+    }
+
+    @Override
+    public UserDto getUserById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+        return userMapper.mapToUserDto(user);
     }
 }

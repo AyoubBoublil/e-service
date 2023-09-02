@@ -1,6 +1,8 @@
 package com.school.eservice.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public class AbstractEntity {
 
     @Id
@@ -28,7 +32,6 @@ public class AbstractEntity {
     @LastModifiedDate
     @Column(columnDefinition = "timestamp default '2020-04-10 20:47:05.967394'")
     protected LocalDateTime lastModifiedDate;
-
     @Column(columnDefinition = "integer default 1")
     protected int enabled;
 

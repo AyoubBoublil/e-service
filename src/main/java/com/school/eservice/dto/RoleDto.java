@@ -4,6 +4,8 @@ import lombok.*;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoleDto {
     private String roleName;
 }
