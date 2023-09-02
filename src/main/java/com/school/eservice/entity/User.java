@@ -18,7 +18,7 @@ public class User extends AbstractEntity{
     private String phone;
     private String password;
     private boolean isAccountActive;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))

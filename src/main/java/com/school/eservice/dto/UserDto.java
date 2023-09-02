@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -19,4 +21,5 @@ public class UserDto {
     private String email;
     @NotBlank(message = "Number should not be empty or null")
     private String phone;
+    private List<RoleDto> roles;
 }
