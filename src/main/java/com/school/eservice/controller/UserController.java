@@ -3,6 +3,7 @@ package com.school.eservice.controller;
 import com.school.eservice.dto.UserDto;
 import com.school.eservice.exception.IncorrectDataRequestException;
 import com.school.eservice.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/manage-users")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -20,15 +21,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+    @PostMapping
+    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
         if (Objects.nonNull(userDto))
             return ResponseEntity.ok(userService.createUser(userDto));
         else
             throw new IncorrectDataRequestException("Incorrect data");
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
         if (Objects.nonNull(userDto))
             return ResponseEntity.ok(userService.updateUser(userDto));
@@ -36,7 +37,7 @@ public class UserController {
             throw new IncorrectDataRequestException("Incorrect data");
     }
 
-    @DeleteMapping("/delete/{userId}")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         if (Objects.nonNull(userId)) {
             userService.deleteUser(userId);
@@ -45,12 +46,12 @@ public class UserController {
             throw new IncorrectDataRequestException("Incorrect data");
     }
 
-    @GetMapping("/allUsers")
+    @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long userId) {
         if (Objects.nonNull(userId))
             return ResponseEntity.ok(userService.getUserById(userId));
