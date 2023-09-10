@@ -21,18 +21,18 @@ public class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @CreatedBy
-    @Column(columnDefinition = "bigint default 1", updatable = false)
-    protected Long createdBy;
+    @Column(updatable = false)
+    protected String createdBy;
     @CreatedDate
     @Column(columnDefinition = "timestamp default '2020-04-10 20:47:05.967394'", updatable = false)
     protected LocalDateTime createdDate;
     @LastModifiedBy
-    @Column(columnDefinition = "bigint default 1")
-    protected Long lastModifiedBy;
+    @Column
+    protected String lastModifiedBy;
     @LastModifiedDate
     @Column(columnDefinition = "timestamp default '2020-04-10 20:47:05.967394'")
     protected LocalDateTime lastModifiedDate;
     @Column(columnDefinition = "integer default 1")
-    protected int enabled;
+    protected Integer enabled;
 
 }

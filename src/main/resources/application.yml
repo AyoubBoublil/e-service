@@ -3,9 +3,10 @@ spring:
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/e-service
+    url: jdbc:postgresql://localhost:5432/e-service-db
     username: postgres
     password: root
+
   # JPA properties
   jpa:
     hibernate:
@@ -16,3 +17,8 @@ spring:
     properties:
       hibernate:
         default_schema: e-service
+    defer-datasource-initialization: true
+# JWT properties
+token:
+  signing:
+    key: 413F4428472B4B6250655368566D5970337336763979244226452948404D6351

@@ -1,9 +1,8 @@
 package com.school.eservice.entity;
 
+import com.school.eservice.enums.ERole;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.Collection;
 
 @Getter
 @Setter
@@ -12,8 +11,8 @@ import java.util.Collection;
 @Entity
 public class Role extends AbstractEntity{
 
-    private String roleName;
-    @ManyToMany(mappedBy = "roles")
-    private Collection<User> users;
+    @Enumerated(EnumType.STRING)
+    @Column
+    private ERole name;
 
 }

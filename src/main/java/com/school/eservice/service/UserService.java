@@ -1,6 +1,7 @@
 package com.school.eservice.service;
 
 import com.school.eservice.dto.UserDto;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
@@ -11,5 +12,6 @@ public interface UserService {
     void deleteUser(Long userId);
     List<UserDto> getAllUsers();
     UserDto getUserById(Long userId);
+    UserDetailsService userDetailsService();
 
 }
