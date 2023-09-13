@@ -31,6 +31,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
                                     @NotNull FilterChain filterChain) throws ServletException, IOException {
         logger.info("JwtAuthenticationFilter authenticated ...");
+        response.addHeader("Access-Control-Allow-Origin","*");
+        response.addHeader("Access-Control-Allow-Headers",
+                "Origin, Accept, X-Requested-With, Content-Type," +
+                        "Access-Control-Request-Method," +
+                        "Access-Control-Request-Headers," +
+                        "Authorization");
+
+        response.addHeader("Access-Control-Expose-Headers",
+                "Access-Control-Allow-Origin," +
+                        "Access-Control-Allow-Credentials," +
+                        "Authorization");
         final String authHeader = request.getHeader(Constants.HEADER_STRING);
         final String jwt;
         final String userEmail;

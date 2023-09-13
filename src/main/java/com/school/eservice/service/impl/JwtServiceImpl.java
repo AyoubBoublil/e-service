@@ -33,11 +33,11 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, String firstName, String lastName) {
         final String authorities = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
-        return generateToken(authorities, userDetails);
+        return generateToken(authorities, userDetails, firstName, lastName);
     }
 
     @Override
@@ -51,9 +51,11 @@ public class JwtServiceImpl implements JwtService {
         return claimsResolvers.apply(claims);
     }
 
-    private String generateToken(String authorities, UserDetails userDetails) {
+    private String generateToken(String authorities, UserDetails userDetails, String firstName, String lastName) {
         return Jwts.builder()
                 .claim(Constants.AUTHORITIES_KEY, authorities)
+                .claim(Constants.FIRST_NAME_KEY, firstName)
+                .claim(Constants.LAST_NAME_KEY, lastName)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + Constants.ACCESS_TOKEN_VALIDITY))

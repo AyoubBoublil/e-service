@@ -16,8 +16,6 @@ import com.school.eservice.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,18 +38,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
         if (Objects.nonNull(request)) {
-            // verify roles
-            if (request.getRoles() == null || request.getRoles().isEmpty())
-                throw new IncorrectDataRequestException("You have to assign at least one role");
             // verify user email if already exist
             if (userRepository.findByEmail(request.getEmail()).isPresent())
                 throw new UserAlreadyExistsException("Email is already used");
             // get role by name
             Set<Role> roles = new HashSet<>();
-            request.getRoles()
-                    .forEach(role -> {
-                        roles.add(roleRepository.findByName(ERole.findERoleByName(role)).orElseThrow(() -> new RoleNotFoundException("Role not found")));
-                    });
+            // verify roles
+            if (request.getRoles() == null || request.getRoles().isEmpty())
+                roles.add(roleRepository.findByName(ERole.findERoleByName(ERole.ROLE_STUDENT.name())).orElseThrow(() -> new RoleNotFoundException("Role not found")));
+            else
+                request.getRoles()
+                        .forEach(role -> {
+                            roles.add(roleRepository.findByName(ERole.findERoleByName(role)).orElseThrow(() -> new RoleNotFoundException("Role not found")));
+                        });
             var user = User.builder()
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
@@ -61,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .roles(roles)
                     .build();
             user = userRepository.save(user);
-            var jwt = jwtService.generateToken(user);
+            var jwt = jwtService.generateToken(user, user.getFirstName(), user.getLastName());
             return JwtAuthenticationResponse.builder().token(jwt).build();
         }
         throw new IncorrectDataRequestException("The data is incorrect");
@@ -72,7 +71,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         var user = userRepository.findByEmail(request.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
-        var jwt = jwtService.generateToken(user);
+        var jwt = jwtService.generateToken(user, user.getFirstName(), user.getLastName());
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
 }
