@@ -32,7 +32,7 @@ public class AbstractEntity {
     @LastModifiedDate
     @Column(columnDefinition = "timestamp default '2020-04-10 20:47:05.967394'")
     protected LocalDateTime lastModifiedDate;
-    @Column(columnDefinition = "integer default 1")
-    protected Integer enabled;
+    @Column
+    protected Integer enabled = 1;
 
 }

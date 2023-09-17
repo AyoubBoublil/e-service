@@ -4,6 +4,8 @@ import com.school.eservice.dto.UserDto;
 import com.school.eservice.exception.IncorrectDataRequestException;
 import com.school.eservice.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,37 +17,25 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api/v1/manage-users")
 @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
-        if (Objects.nonNull(userDto))
-            return ResponseEntity.ok(userService.createUser(userDto));
-        else
-            throw new IncorrectDataRequestException("Incorrect data");
+        return ResponseEntity.ok(userService.createUser(userDto));
     }
 
     @PutMapping
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
-        if (Objects.nonNull(userDto))
-            return ResponseEntity.ok(userService.updateUser(userDto));
-        else
-            throw new IncorrectDataRequestException("Incorrect data");
+        return ResponseEntity.ok(userService.updateUser(userDto));
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
-        if (Objects.nonNull(userId)) {
-            userService.deleteUser(userId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else
-            throw new IncorrectDataRequestException("Incorrect data");
+        userService.deleteUser(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping
@@ -55,10 +45,8 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long userId) {
-        if (Objects.nonNull(userId))
-            return ResponseEntity.ok(userService.getUserById(userId));
-        else
-            throw new IncorrectDataRequestException("Incorrect data");
+        return ResponseEntity.ok(userService.getUserById(userId));
+
     }
 
 }

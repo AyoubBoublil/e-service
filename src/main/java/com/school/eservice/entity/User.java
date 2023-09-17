@@ -29,6 +29,8 @@ public class User extends AbstractEntity implements UserDetails {
     private String phone;
     @Column
     private String password;
+    @ManyToOne
+    private Level level;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id")},

@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Role extends AbstractEntity{
+public class Role extends AbstractEntity {
 
     @Enumerated(EnumType.STRING)
     @Column

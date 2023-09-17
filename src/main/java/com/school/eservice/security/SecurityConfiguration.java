@@ -1,6 +1,5 @@
 package com.school.eservice.security;
 
-import com.school.eservice.enums.ERole;
 import com.school.eservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -32,10 +31,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/api/v1/auth/**").permitAll().anyRequest().authenticated()
-                        //.requestMatchers("/api/v1/manage-users/**").hasRole(ERole.ROLE_ADMIN.name())
-
+                                .requestMatchers("/public/**").permitAll()
+                                .requestMatchers("/api/v1/**").permitAll().anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

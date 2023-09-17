@@ -39,18 +39,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
         if (Objects.nonNull(request)) {
             // verify user email if already exist
-            if (userRepository.findByEmail(request.getEmail()).isPresent())
+            if (userRepository.findByEmailAndEnabled(request.getEmail(),1).isPresent())
                 throw new UserAlreadyExistsException("Email is already used");
             // get role by name
             Set<Role> roles = new HashSet<>();
             // verify roles
-            if (request.getRoles() == null || request.getRoles().isEmpty())
-                roles.add(roleRepository.findByName(ERole.findERoleByName(ERole.ROLE_STUDENT.name())).orElseThrow(() -> new RoleNotFoundException("Role not found")));
-            else
-                request.getRoles()
-                        .forEach(role -> {
-                            roles.add(roleRepository.findByName(ERole.findERoleByName(role)).orElseThrow(() -> new RoleNotFoundException("Role not found")));
-                        });
+            roles.add(roleRepository.findByName(ERole.findERoleByName(ERole.ROLE_STUDENT.name())).orElseThrow(() -> new RoleNotFoundException("Role not found")));
             var user = User.builder()
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
@@ -69,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public JwtAuthenticationResponse signIn(SigninRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        var user = userRepository.findByEmail(request.getUsername())
+        var user = userRepository.findByEmailAndEnabled(request.getUsername(),1)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
         var jwt = jwtService.generateToken(user, user.getFirstName(), user.getLastName());
         return JwtAuthenticationResponse.builder().token(jwt).build();
